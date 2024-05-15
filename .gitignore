@@ -1,2 +1,8 @@
-.vscode
+# Ignore Phoenicia-Digital.log file
 Phoenicia-Digital.log
+
+# Ignore .vscode directory
+.vscode/
+
+# Ignore dist directory
+dist/

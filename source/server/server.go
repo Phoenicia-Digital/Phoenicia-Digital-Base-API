@@ -9,11 +9,11 @@ import (
 )
 
 // Initialize Server Ecosystem Variables
-var _PhoeniciaDigitalMultiplexer *http.ServeMux = http.NewServeMux()
+var multiplexer *http.ServeMux = http.NewServeMux()
 
 var PhoeniciaDigitalServer *http.Server = &http.Server{
 	Addr:    PhoeniciaDigitalConfig.Config.Port,
-	Handler: _PhoeniciaDigitalMultiplexer,
+	Handler: multiplexer,
 }
 
 func StartServer() {

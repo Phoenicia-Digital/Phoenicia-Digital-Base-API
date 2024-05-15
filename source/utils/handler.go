@@ -6,26 +6,26 @@ import (
 	"net/http"
 )
 
-type apifunc func(http.ResponseWriter, *http.Request) error
+type _PhoeniciaDigitalAPIFunc func(http.ResponseWriter, *http.Request) error
 
 type ApiError struct {
-	Code  int    `json:"statuss"`
-	Error string `json:"error"`
+	Code       int `json:"statuss"`
+	ErrorQuote any `json:"error"`
 }
 
 type ApiSuccess struct {
-	Code         int    `json:"status"`
-	SuccessQuote string `json:"quote"`
+	Code         int `json:"status"`
+	SuccessQuote any `json:"success"`
 }
 
-func WriteJSON(w http.ResponseWriter, status int, val any) error {
+func SendJSON(w http.ResponseWriter, status int, val any) error {
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	return json.NewEncoder(w).Encode(val)
 }
 
-func PhoeniciaDigitalHandler(df apifunc) http.HandlerFunc {
+func Handler(df _PhoeniciaDigitalAPIFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")

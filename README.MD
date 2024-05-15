@@ -3,7 +3,7 @@
 The `server.go` file located in `~/source/server/server.go` contains the initialization function that stores all the functions via the multiplexer.
 
 ```go
-multiplexer.HandleFunc("<METHOD> <ROUTE>", PhoeniciaDigitalUtils.Handler(<FUNCTION>))
+multiplexer.Handle("<METHOD> <ROUTE>", PhoeniciaDigitalUtils.PhoeniciaDigitalHandler(<FUNCTION>))
 ```
 
 - The `<METHOD>` tag stores the method if needed ('GET', 'DELETE', 'PUT', 'POST').
@@ -12,12 +12,12 @@ multiplexer.HandleFunc("<METHOD> <ROUTE>", PhoeniciaDigitalUtils.Handler(<FUNCTI
 
 **Keep in mind the tags should not contain `< >`:**
 ```go
-multiplexer.HandleFunc("GET /", PhoeniciaDigitalUtils.Handler(MYFUNC))
+multiplexer.Handle("GET /", PhoeniciaDigitalUtils.PhoeniciaDigitalHandler(MYFUNC))
 ```
 
-## The `PhoeniciaDigitalUtils.Handler()` Function
+## The `PhoeniciaDigitalUtils.PhoeniciaDigitalHandler()` Function
 
-This function handles the logic of the function and returns an `http.HandleFunc`.
+This function handles the logic of the function type `PhoeniciaDigitalHandler` which returns an error.
 
 ### Why Not Use the Base `http.HandleFunc`?
 

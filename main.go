@@ -1,6 +1,6 @@
 package main
 
-import PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/server"
+import PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/source/server"
 
 func main() {
 	PhoeniciaDigitalServer.StartServer()

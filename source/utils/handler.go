@@ -26,9 +26,9 @@ type ApiSuccess struct {
 
 func SendJSON(w http.ResponseWriter, status int, val any) error {
 	// Set the Response Writers Header status and the content type to JSON so that we can send JSON
-	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(status)
 
 	// Encode The Value `val` into the Response Writer and return an error if occured which will be managed by
 	// the ServeHTTP interface ONLY IF USING `PhoeniciaDigitalHnadler`

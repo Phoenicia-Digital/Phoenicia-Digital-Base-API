@@ -23,6 +23,6 @@ This function handles the logic of the function type `PhoeniciaDigitalHandler` w
 
 We don't use the base `http.HandleFunc` due to our error handling system in place:
 
-- Our functions return an error with the help of the `PhoeniciaDigitalUtils.SendJSON` function.
+- Our functions return an error by just returning a `ApiError` Struct.
 - In case of an error, you can return the exact error to the frontend with the `ApiError` struct.
-- Similarly, in case of success with no data, you can return the success code and quote with the `ApiSuccess` struct.
+- Similarly, In case of no error you would return a `SendJSON` function will filled in parameters.

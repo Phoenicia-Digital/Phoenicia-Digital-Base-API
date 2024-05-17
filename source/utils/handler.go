@@ -3,6 +3,7 @@ package PhoeniciaDigitalUtils
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -11,10 +12,21 @@ import (
 type PhoeniciaDigitalHandler func(http.ResponseWriter, *http.Request) error
 
 type ApiError struct {
-	// ApiError struct can be returned as a `val` in `SendJSON` so we get a JSON response
-	// for unsucessful calls || ERRORS
+	// ApiError struct can be returned as a error in API functions and automatically does error handling
+	// for unsucessful calls || ERRORS via the ServeHTTP interface for `PhoeniciaDigitalHandler`
 	Code       int `json:"status"`
 	ErrorQuote any `json:"error"`
+}
+
+// Implements the `error` interface for ApiError.
+func (apiErr ApiError) Error() string {
+	if str, ok := apiErr.ErrorQuote.(string); ok {
+		// Handle string ErrorQuote
+		return fmt.Sprintf("Error Code: %d, Error Quote: %s", apiErr.Code, str)
+	} else {
+		// Handle non-string ErrorQuote
+		return fmt.Sprintf("Error Code: %d, Error Quote (NON STRING VALUE): %v", apiErr.Code, apiErr.ErrorQuote)
+	}
 }
 
 type ApiSuccess struct {
@@ -42,10 +54,18 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-	// Call the underlying handler function
-	err := pdf(w, r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	// Call the underlying handler function & Handle Errors
+	if err := pdf(w, r); err != nil {
+		Log(err.Error())
+		if apiErr, ok := err.(ApiError); ok {
+			if ierr := SendJSON(w, apiErr.Code, apiErr); ierr != nil {
+				http.Error(w, apiErr.Error(), apiErr.Code)
+			}
+		} else {
+			if ierr := SendJSON(w, http.StatusInternalServerError, ApiError{Code: http.StatusInternalServerError, ErrorQuote: err.Error()}); ierr != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
 	}
 }
 

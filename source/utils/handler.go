@@ -94,7 +94,7 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	// Call the underlying handler function & Handle Responses | ERROR / NON-ERROR
 	if resp := pdf(w, r); resp != nil {
 		if _, ok := resp.(ApiSuccess); ok {
-			if resp.Status() != 0 && resp.Response() != nil {
+			if resp.Status() != 0 || resp.Response() != nil {
 				if ierr := SendJSON(w, resp.Status(), resp.Response()); ierr != nil {
 					http.Error(w, resp.Log(), resp.Status())
 				}
@@ -102,7 +102,7 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 				http.Error(w, "Request Returned Successful But Empty Paramaters", http.StatusInternalServerError)
 			}
 		} else if _, ok := resp.(ApiError); ok {
-			if resp.Status() != 0 && resp.Response() != nil {
+			if resp.Status() != 0 || resp.Response() != nil {
 				Log(resp.Log())
 				if ierr := SendJSON(w, resp.Status(), resp); ierr != nil {
 					http.Error(w, resp.Log(), resp.Status())

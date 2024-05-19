@@ -9,33 +9,70 @@ import (
 
 // The Interface we use for our functions | Since they return an error
 // used in http.Handle(_, <PhoeniciaDigitalHandler(function)>)
-type PhoeniciaDigitalHandler func(http.ResponseWriter, *http.Request) error
+type PhoeniciaDigitalHandler func(http.ResponseWriter, *http.Request) PhoeniciaDigitalResponse
+
+// Implement the `PhoeniciaDigitalResponse` Interface this will be the Responses on all API Functions Either
+// Success Or Error and each will be handled automatically using the PhoeniciaDigitalHandler
+type PhoeniciaDigitalResponse interface {
+	Status() int
+	Log() string
+	Response() any
+}
 
 type ApiError struct {
 	// ApiError struct can be returned as a error in API functions and automatically does error handling
 	// for unsucessful calls || ERRORS via the ServeHTTP interface for `PhoeniciaDigitalHandler`
-	Code       int `json:"status"`
-	ErrorQuote any `json:"error"`
-}
-
-// Implements the `error` interface for ApiError.
-func (apiErr ApiError) Error() string {
-	if str, ok := apiErr.ErrorQuote.(string); ok {
-		// Handle string ErrorQuote
-		return fmt.Sprintf("Error Code: %d, Error Quote: %s", apiErr.Code, str)
-	} else {
-		// Handle non-string ErrorQuote
-		return fmt.Sprintf("Error Code: %d, Error Quote (NON STRING VALUE): %v", apiErr.Code, apiErr.ErrorQuote)
-	}
+	Code  int `json:"status"`
+	Quote any `json:"response"`
 }
 
 type ApiSuccess struct {
 	// ApiSuccess struct can be returned as a `val` in `SendJSON` so we get a JSON response
 	// for successful calls
-	Code         int `json:"status"`
-	SuccessQuote any `json:"success"`
+	Code  int `json:"status"`
+	Quote any `json:"response"`
 }
 
+// Implements the `phoeniciaDigitalResponse` interface for ApiError.
+func (apiErr ApiError) Log() string {
+	if str, ok := apiErr.Quote.(string); ok {
+		// Handle string ErrorQuote
+		return fmt.Sprintf("Error Code: %d, Error Quote: %s", apiErr.Code, str)
+	} else {
+		// Handle non-string ErrorQuote
+		return fmt.Sprintf("Error Code: %d, Error Quote (NON STRING VALUE): %v", apiErr.Code, apiErr.Quote)
+	}
+}
+
+func (apiErr ApiError) Status() int {
+	return apiErr.Code
+}
+
+func (apiErr ApiError) Response() any {
+	return apiErr.Quote
+}
+
+// Implements the `phoeniciaDigitalResponse` interface for ApiSuccess.
+func (apiScc ApiSuccess) Log() string {
+	if str, ok := apiScc.Quote.(string); ok {
+		// Handle string ErrorQuote
+		return fmt.Sprintf("Success Code: %d, Success Quote: %s", apiScc.Code, str)
+	} else {
+		// Handle non-string ErrorQuote
+		return fmt.Sprintf("Success Code: %d, Success Quote (NON STRING VALUE): %v", apiScc.Code, apiScc.Quote)
+	}
+}
+
+func (apiScc ApiSuccess) Status() int {
+	return apiScc.Code
+}
+
+func (apiScc ApiSuccess) Response() any {
+	return apiScc.Quote
+}
+
+// Implementing the SendJSON function that will send JSON responses in an organized consistant manner through
+// the api responses
 func SendJSON(w http.ResponseWriter, status int, val any) error {
 	// Set the Response Writers Header status and the content type to JSON so that we can send JSON
 	w.Header().Set("Content-Type", "application/json")
@@ -54,17 +91,22 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-	// Call the underlying handler function & Handle Errors
-	if err := pdf(w, r); err != nil {
-		Log(err.Error())
-		if apiErr, ok := err.(ApiError); ok {
-			if ierr := SendJSON(w, apiErr.Code, apiErr); ierr != nil {
-				http.Error(w, apiErr.Error(), apiErr.Code)
+	// Call the underlying handler function & Handle Responses | ERROR / NON-ERROR
+	if resp := pdf(w, r); resp != nil {
+		if _, ok := resp.(ApiSuccess); ok {
+			if ierr := SendJSON(w, resp.Status(), resp.Response()); ierr != nil {
+				http.Error(w, resp.Log(), resp.Status())
 			}
-		} else {
-			if ierr := SendJSON(w, http.StatusInternalServerError, ApiError{Code: http.StatusInternalServerError, ErrorQuote: err.Error()}); ierr != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+		} else if _, ok := resp.(ApiError); ok {
+			Log(resp.Log())
+			if ierr := SendJSON(w, resp.Status(), resp); ierr != nil {
+				http.Error(w, resp.Log(), resp.Status())
 			}
+		}
+	} else {
+		Log("!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL")
+		if ierr := SendJSON(w, http.StatusInternalServerError, ApiError{Code: http.StatusInternalServerError, Quote: "!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL"}); ierr != nil {
+			http.Error(w, "!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL", http.StatusInternalServerError)
 		}
 	}
 }

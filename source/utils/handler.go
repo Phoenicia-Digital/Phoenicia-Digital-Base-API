@@ -94,19 +94,27 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	// Call the underlying handler function & Handle Responses | ERROR / NON-ERROR
 	if resp := pdf(w, r); resp != nil {
 		if _, ok := resp.(ApiSuccess); ok {
-			if ierr := SendJSON(w, resp.Status(), resp.Response()); ierr != nil {
-				http.Error(w, resp.Log(), resp.Status())
+			if resp.Status() != 0 && resp.Response() != nil {
+				if ierr := SendJSON(w, resp.Status(), resp.Response()); ierr != nil {
+					http.Error(w, resp.Log(), resp.Status())
+				}
+			} else {
+				http.Error(w, "Request Returned Successful But Empty Paramaters", http.StatusInternalServerError)
 			}
 		} else if _, ok := resp.(ApiError); ok {
-			Log(resp.Log())
-			if ierr := SendJSON(w, resp.Status(), resp); ierr != nil {
-				http.Error(w, resp.Log(), resp.Status())
+			if resp.Status() != 0 && resp.Response() != nil {
+				Log(resp.Log())
+				if ierr := SendJSON(w, resp.Status(), resp); ierr != nil {
+					http.Error(w, resp.Log(), resp.Status())
+				}
+			} else {
+				http.Error(w, "Request Returned Error But Empty Paramaters", http.StatusInternalServerError)
 			}
 		}
 	} else {
-		Log("!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL")
+		Log("!!!CAUTION!!! `PhoeniciaDigitalResponse` nil RETURNED ON LAST API CALL")
 		if ierr := SendJSON(w, http.StatusInternalServerError, ApiError{Code: http.StatusInternalServerError, Quote: "!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL"}); ierr != nil {
-			http.Error(w, "!!!CAUTION!!! NO TYPE `PhoeniciaDigitalResponse` RETURNED ON LAST API CALL", http.StatusInternalServerError)
+			http.Error(w, "!!!CAUTION!!! `PhoeniciaDigitalResponse` nil RETURNED ON LAST API CALL", http.StatusInternalServerError)
 		}
 	}
 }

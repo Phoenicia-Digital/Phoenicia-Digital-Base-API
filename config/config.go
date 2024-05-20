@@ -2,6 +2,7 @@
 package PhoeniciaDigitalConfig
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -9,8 +10,9 @@ import (
 )
 
 type _PhoeniciaDigitalConfig struct {
-	Port          string
-	MongodbServer string
+	Port     string
+	Mongodb  string
+	Postgres string
 }
 
 func loadConfig() (*_PhoeniciaDigitalConfig, error) {
@@ -22,8 +24,9 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 
 	// Create a new _BEUConfig struct and populate it with values from environment variables
 	config := &_PhoeniciaDigitalConfig{
-		Port:          os.Getenv("PORT"),
-		MongodbServer: os.Getenv("MONGODB"),
+		Port:     fmt.Sprintf(":%s", os.Getenv("PORT")),
+		Mongodb:  os.Getenv("MONGODB"),
+		Postgres: os.Getenv("POSTGRES"),
 	}
 
 	return config, nil

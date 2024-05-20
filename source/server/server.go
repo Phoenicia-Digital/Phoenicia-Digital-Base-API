@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // Initialize Server Ecosystem Variables
@@ -18,9 +19,24 @@ var PhoeniciaDigitalServer *http.Server = &http.Server{
 }
 
 func StartServer() {
-	log.Printf("Server Running on http://localhost%s", PhoeniciaDigitalServer.Addr)
-	PhoeniciaDigitalUtils.Log(fmt.Sprintf("Server Started on PORT --> %s", PhoeniciaDigitalServer.Addr))
-	log.Fatal(PhoeniciaDigitalServer.ListenAndServe())
+	if PhoeniciaDigitalServer.Addr != ":" {
+		if portNumber, err := strconv.Atoi(PhoeniciaDigitalServer.Addr[1:]); err != nil {
+			log.Printf("Given PORT is Invalid: %s != int | Change in ~/config/.env", PhoeniciaDigitalServer.Addr[1:])
+			PhoeniciaDigitalUtils.Log(fmt.Sprintf("Given PORT is Invalid: %s != int | Change in ~/config/.env", PhoeniciaDigitalServer.Addr[1:]))
+		} else {
+			if portNumber >= 0 && portNumber <= 65535 {
+				log.Printf("Server Running on http://localhost%s", PhoeniciaDigitalServer.Addr)
+				PhoeniciaDigitalUtils.Log(fmt.Sprintf("Server started on PORT --> %s", PhoeniciaDigitalServer.Addr))
+				log.Fatal(PhoeniciaDigitalServer.ListenAndServe())
+			} else {
+				log.Printf("Given PORT: %s is OUT OF RANGE 0 --> 65535 | Change in ~/config/.env", PhoeniciaDigitalServer.Addr[1:])
+				PhoeniciaDigitalUtils.Log(fmt.Sprintf("Given PORT: %s is OUT OF RANGE 0 --> 65535 | Change in ~/config/.env", PhoeniciaDigitalServer.Addr[1:]))
+			}
+		}
+	} else {
+		log.Printf("Given PORT is empty | Change in ~/config/.env")
+		PhoeniciaDigitalUtils.Log("Given PORT is empty | Change in ~/config/.env")
+	}
 }
 
 // Initialize Server Logic

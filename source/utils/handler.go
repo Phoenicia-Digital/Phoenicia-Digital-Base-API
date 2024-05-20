@@ -92,20 +92,20 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 	// Call the underlying handler function & Handle Responses | ERROR / NON-ERROR
-	if resp := pdf(w, r); resp != nil {
-		if _, ok := resp.(ApiSuccess); ok {
-			if resp.Status() != 0 || resp.Response() != nil {
-				if ierr := SendJSON(w, resp.Status(), resp.Response()); ierr != nil {
-					http.Error(w, resp.Log(), resp.Status())
+	if response := pdf(w, r); response != nil {
+		if _, converted := response.(ApiSuccess); converted {
+			if response.Status() != 0 || response.Response() != nil {
+				if ierr := SendJSON(w, response.Status(), response.Response()); ierr != nil {
+					http.Error(w, response.Log(), response.Status())
 				}
 			} else {
 				http.Error(w, "Request Returned Successful But Empty Paramaters", http.StatusInternalServerError)
 			}
-		} else if _, ok := resp.(ApiError); ok {
-			if resp.Status() != 0 || resp.Response() != nil {
-				Log(resp.Log())
-				if ierr := SendJSON(w, resp.Status(), resp); ierr != nil {
-					http.Error(w, resp.Log(), resp.Status())
+		} else if _, converted := response.(ApiError); converted {
+			if response.Status() != 0 || response.Response() != nil {
+				Log(response.Log())
+				if ierr := SendJSON(w, response.Status(), response); ierr != nil {
+					http.Error(w, response.Log(), response.Status())
 				}
 			} else {
 				http.Error(w, "Request Returned Error But Empty Paramaters", http.StatusInternalServerError)

@@ -12,6 +12,8 @@ build:
 	@go build -v -o $(BUILD_DIR) $(MAIN_PACKAGE)
 	@mkdir -p $(BUILD_DIR)/config
 	@cp config/.env $(BUILD_DIR)/config
+	@mkdir -p $(BUILD_DIR)/sql
+	@cp sql/* $(BUILD_DIR)/sql
 
 clean:
 	@echo "Cleaning build artifacts..."

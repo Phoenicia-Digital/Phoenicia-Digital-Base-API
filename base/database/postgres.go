@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -16,6 +17,16 @@ type postgres struct {
 
 var Postgres *postgres = &postgres{
 	DB: implementPostgres(),
+}
+
+func (p postgres) ReadSQL(fileName string) (string, error) {
+	if query, err := os.ReadFile(fmt.Sprintf("./sql/%s.sql", fileName)); err != nil {
+		log.Printf("Error reading query file: %s | Error: %s", query, err.Error())
+		PhoeniciaDigitalUtils.Log(fmt.Sprintf("Error reading query file: %s | Error: %s", query, err.Error()))
+		return "", err
+	} else {
+		return string(query), err
+	}
 }
 
 func implementPostgres() *sql.DB {

@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "Phoenicia-Digital-Base-API/source/database"
-	PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/source/server"
+	_ "Phoenicia-Digital-Base-API/base/database"
+	PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/base/server"
 )
 
 func main() {

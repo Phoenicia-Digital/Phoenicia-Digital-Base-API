@@ -1,8 +1,8 @@
 package PhoeniciaDigitalDatabase
 
 import (
+	PhoeniciaDigitalUtils "Phoenicia-Digital-Base-API/base/utils"
 	PhoeniciaDigitalConfig "Phoenicia-Digital-Base-API/config"
-	PhoeniciaDigitalUtils "Phoenicia-Digital-Base-API/source/utils"
 	"database/sql"
 	"fmt"
 	"log"

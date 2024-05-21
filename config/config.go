@@ -9,10 +9,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type postgres struct {
+	Postgres_user     string
+	Postgres_password string
+	Postgres_db       string
+	Postgres_ssl      string
+}
+
 type _PhoeniciaDigitalConfig struct {
 	Port     string
 	Mongodb  string
-	Postgres string
+	Postgres postgres
 }
 
 func loadConfig() (*_PhoeniciaDigitalConfig, error) {
@@ -24,9 +31,14 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 
 	// Create a new _BEUConfig struct and populate it with values from environment variables
 	config := &_PhoeniciaDigitalConfig{
-		Port:     fmt.Sprintf(":%s", os.Getenv("PORT")),
-		Mongodb:  os.Getenv("MONGODB"),
-		Postgres: os.Getenv("POSTGRES"),
+		Port:    fmt.Sprintf(":%s", os.Getenv("PORT")),
+		Mongodb: os.Getenv("MONGODB"),
+		Postgres: postgres{
+			Postgres_user:     os.Getenv("POSTGRES_USER"),
+			Postgres_password: os.Getenv("POSTGRES_PASSWORD"),
+			Postgres_db:       os.Getenv("POSTGRES_DB"),
+			Postgres_ssl:      os.Getenv("POSTGRES_SSL"),
+		},
 	}
 
 	return config, nil

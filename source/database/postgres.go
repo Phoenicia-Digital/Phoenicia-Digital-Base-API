@@ -32,8 +32,14 @@ func implementPostgres() *sql.DB {
 						log.Fatalf("Failed to connect to Postgres Database | Verify Postgres Database config values ./config/.env | Error: %s", err.Error())
 						return nil
 					} else {
-						log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s password=*** sslmode=%s\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, PhoeniciaDigitalConfig.Config.Postgres.Postgres_ssl)
-						return db
+						if rows, err := db.Query("SELECT 1"); err != nil {
+							log.Fatalf("Database Name: %s Does NOT EXIST | Change at ./config/.env | Error: %s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, err.Error())
+							return nil
+						} else {
+							rows.Close()
+							log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s password=*** sslmode=%s\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, PhoeniciaDigitalConfig.Config.Postgres.Postgres_ssl)
+							return db
+						}
 					}
 				}
 			} else {
@@ -47,8 +53,14 @@ func implementPostgres() *sql.DB {
 						log.Fatalf("Failed to connect to Postgres Database | Verify Postgres Database config values ./config/.env | Error: %s", err.Error())
 						return nil
 					} else {
-						log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s password=*** sslmode=disable\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db)
-						return db
+						if rows, err := db.Query("SELECT 1"); err != nil {
+							log.Fatalf("Database Name: %s Does NOT EXIST | Change at ./config/.env | Error: %s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, err.Error())
+							return nil
+						} else {
+							rows.Close()
+							log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s password=*** sslmode=disable\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db)
+							return db
+						}
 					}
 				}
 			}
@@ -64,8 +76,14 @@ func implementPostgres() *sql.DB {
 						log.Fatalf("Failed to connect to Postgres Database | Verify Postgres Database config values ./config/.env | Error: %s", err.Error())
 						return nil
 					} else {
-						log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s sslmode=%s\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, PhoeniciaDigitalConfig.Config.Postgres.Postgres_ssl)
-						return db
+						if rows, err := db.Query("SELECT 1"); err != nil {
+							log.Fatalf("Database Name: %s Does NOT EXIST | Change at ./config/.env | Error: %s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, err.Error())
+							return nil
+						} else {
+							rows.Close()
+							log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s sslmode=%s\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, PhoeniciaDigitalConfig.Config.Postgres.Postgres_ssl)
+							return db
+						}
 					}
 				}
 			} else {
@@ -79,8 +97,14 @@ func implementPostgres() *sql.DB {
 						log.Fatalf("Failed to connect to Postgres Database | Verify Postgres Database config values ./config/.env | Error: %s", err.Error())
 						return nil
 					} else {
-						log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s sslmode=disable\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db)
-						return db
+						if rows, err := db.Query("SELECT 1"); err != nil {
+							log.Fatalf("Database Name: %s Does NOT EXIST | Change at ./config/.env | Error: %s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_db, err.Error())
+							return nil
+						} else {
+							rows.Close()
+							log.Printf("Implemented Postgres Database connection settings: user=%s dbname=%s sslmode=disable\n", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db)
+							return db
+						}
 					}
 				}
 			}

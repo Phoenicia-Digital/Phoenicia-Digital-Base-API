@@ -93,9 +93,3 @@ func implementMongo() *mongodb {
 		return nil
 	}
 }
-
-func init() {
-	if Mongo != nil && Mongo.Client != nil && Mongo.DB != nil && Mongo.Collection != nil {
-		defer Mongo.Client.Disconnect(context.Background())
-	}
-}

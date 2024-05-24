@@ -1,19 +1,18 @@
 package main
 
 import (
-	DB "Phoenicia-Digital-Base-API/base/database"
+	PhoeniciaDigitalDatabase "Phoenicia-Digital-Base-API/base/database"
 	PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/base/server"
 	"context"
 )
 
 func main() {
-	if DB.Postgres.DB != nil {
-		defer DB.Postgres.DB.Close()
-	}
 
-	if DB.Mongo != nil && DB.Mongo.Client != nil && DB.Mongo.DB != nil && DB.Mongo.Collection != nil {
-		defer DB.Mongo.Client.Disconnect(context.Background())
-	}
+	//	if Postgres Database Not In use comment out
+	defer PhoeniciaDigitalDatabase.Postgres.DB.Close()
+
+	// if MongoDB Database Not In Use comment out
+	defer PhoeniciaDigitalDatabase.Mongo.Client.Disconnect(context.Background())
 
 	PhoeniciaDigitalServer.StartServer()
 }

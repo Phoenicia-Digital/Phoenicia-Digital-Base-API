@@ -88,7 +88,7 @@ func (p postgres) QuerySQLRow(fileName string, args ...any) (*sql.Row, error) {
 // THE BENEFIT OF THIS FUNCTION IS THAT IT RETURNS A *sql.Result that does not need to be defer Closed
 // And the *sql.Stmt returned by PrepareSQL will be closed automatically making this more secure
 
-func (p postgres) ExecSQL(fileName string, args ...any) (sql.Result, error) {
+func (p postgres) ExecSQL(fileName string, args ...any) (*sql.Result, error) {
 	// Uses the PrepareSQL method of postgres struct to return a stmt in case an error occured it will return
 	// a nil stmt with the error
 	if stmt, err := p.PrepareSQL(fileName); err != nil {
@@ -102,7 +102,7 @@ func (p postgres) ExecSQL(fileName string, args ...any) (sql.Result, error) {
 			PhoeniciaDigitalUtils.Log(fmt.Sprintf("Error Executing Query | Error: %s", err.Error()))
 			return nil, err
 		} else {
-			return res, nil
+			return &res, nil
 		}
 	}
 }

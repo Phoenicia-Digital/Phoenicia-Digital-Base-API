@@ -16,6 +16,8 @@ type _PhoeniciaDigitalConfig struct {
 }
 
 type postgres struct {
+	Postgres_host     string
+	Postgres_port     string
 	Postgres_user     string
 	Postgres_password string
 	Postgres_db       string
@@ -40,6 +42,8 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 	config := &_PhoeniciaDigitalConfig{
 		Port: fmt.Sprintf(":%s", os.Getenv("PORT")),
 		Postgres: postgres{
+			Postgres_host:     os.Getenv("POSTGRES_HOST"),
+			Postgres_port:     os.Getenv("POSTGRES_PORT"),
 			Postgres_user:     os.Getenv("POSTGRES_USER"),
 			Postgres_password: os.Getenv("POSTGRES_PASSWORD"),
 			Postgres_db:       os.Getenv("POSTGRES_DB"),

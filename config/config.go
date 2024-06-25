@@ -25,10 +25,12 @@ type postgres struct {
 }
 
 type mongo struct {
-	Mongo_host       string
-	Mongo_port       string
-	Mongo_db         string
-	Mongo_collection string
+	Mongo_host     string
+	Mongo_port     string
+	Mongo_db       string
+	Mongo_user     string
+	Mongo_password string
+	Mongo_ssl      string
 }
 
 func loadConfig() (*_PhoeniciaDigitalConfig, error) {
@@ -50,10 +52,12 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 			Postgres_ssl:      os.Getenv("POSTGRES_SSL"),
 		},
 		Mongo: mongo{
-			Mongo_host:       os.Getenv("MONGODB_HOST"),
-			Mongo_port:       os.Getenv("MONGODB_PORT"),
-			Mongo_db:         os.Getenv("MONGODB_DATABASE"),
-			Mongo_collection: os.Getenv("MONGODB_COLLECTION"),
+			Mongo_host:     os.Getenv("MONGODB_HOST"),
+			Mongo_port:     os.Getenv("MONGODB_PORT"),
+			Mongo_db:       os.Getenv("MONGODB_DATABASE"),
+			Mongo_user:     os.Getenv("MONGODB_USER"),
+			Mongo_password: os.Getenv("MONGODB_PASSWORD"),
+			Mongo_ssl:      os.Getenv("MONGODB_SSL"),
 		},
 	}
 

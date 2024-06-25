@@ -34,6 +34,7 @@ type ApiSuccess struct {
 }
 
 // Implements the `phoeniciaDigitalResponse` interface for ApiError.
+
 func (apiErr ApiError) Log() string {
 	if str, ok := apiErr.Quote.(string); ok {
 		// Handle string ErrorQuote
@@ -53,6 +54,7 @@ func (apiErr ApiError) Response() any {
 }
 
 // Implements the `phoeniciaDigitalResponse` interface for ApiSuccess.
+
 func (apiScc ApiSuccess) Log() string {
 	if str, ok := apiScc.Quote.(string); ok {
 		// Handle string ErrorQuote
@@ -118,15 +120,3 @@ func (pdf PhoeniciaDigitalHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 		}
 	}
 }
-
-//``` DISCONTINUED USED TO USE THIS AS THE HANDLER INSIDE THE http.HandleFunc but now we http.Handle with the
-// PhoeniciaDigitalAPIFunction Interface! ```
-
-// func Handler(df _PhoeniciaDigitalAPIFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		w.Header().Set("Access-Control-Allow-Origin", "*")
-// 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-// 		df(w, r)
-// 	}
-// }

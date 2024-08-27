@@ -1,0 +1,3 @@
+-- Use this File To Initialize The postgresql-service That Will Be Run By Docker
+-- USE THIS TO CREATE TABLES!
+-- The Will Be Created Only On docker-compose --build

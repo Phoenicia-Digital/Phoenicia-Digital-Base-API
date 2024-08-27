@@ -24,3 +24,5 @@ services:
     restart: unless-stopped
     ports:
       - '${PORT}:${PORT}' # Map the port of the local machine to the containers port for the backend service both use the PORT env variable from the ./config/.env file
+    depends_on:
+      - postgresql-database # Ensure the database service starts before the backend

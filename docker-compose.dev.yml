@@ -1,12 +1,12 @@
-# Create the list of services that will be used by docker-compose
+# Create the list of services that will be used by docker-compose.dev
 services:
 
-  # Create the postgresql-database Service that will host our postgresql Database
+  # Create the postgresql-database Service that will host our postgresql Database For Development
   # 
-  # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE!
+  # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE! AND ITS DEPENDANCY IN go-backend
   postgresql-database:
     image: 'postgres:latest' # Use the latest version of Postgresq
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
@@ -16,11 +16,18 @@ services:
     volumes:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
 
-  # Create the go-backend Service
+  # Create the go-backend Development Environment
   # 
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
   go-backend:
-    build: .
-    restart: unless-stopped
+    build: Dockerfile.dev
+    restart: 'no'
     ports:
       - '${PORT}:${PORT}' # Map the port of the local machine to the containers port for the backend service both use the PORT env variable from the ./config/.env file
+    volumes:
+      - ./source:/Backend/source # Mount the entire project directory for live reloading
+      - ./sql:/Backend/sql # Mount the entire project directory for live reloading
+      - ./config/.env:/Backend/config/.env # Mount the .env file
+      - ./base/server/server.go:/Backend/base/server/server.go # Mount specific file
+    depends_on:
+      - postgresql-database # Ensure the database service starts before the backend

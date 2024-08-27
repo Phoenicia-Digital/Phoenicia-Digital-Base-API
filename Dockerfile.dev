@@ -1,0 +1,24 @@
+# Backend API Will be Run on a Ubuntu Server By Default With a Build For Golang.
+
+FROM golang:1.23
+
+# Procedures that will likely Not Be Changed unless neccessary.
+# DO NOT CHANGE THIS IF YOU DONT KNOW WHAT YOU ARE DOING!
+
+WORKDIR /Backend
+
+# Copy Go module files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy specific files and directories into the image
+COPY ./base/database ./base/database
+COPY ./base/utils ./base/utils
+COPY ./config/config.go ./config/config.go
+COPY main.go ./main.go
+
+# Declare /source as a volume
+VOLUME ["/sql", "/source"]
+
+# Do not change this Unless You Have Changed main.go <file name> or the default build output name!
+CMD [ "go", "run", "main.go" ]

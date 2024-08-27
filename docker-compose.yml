@@ -6,6 +6,7 @@ services:
   # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE!
   postgresql-database:
     image: 'postgres:latest' # Use the latest version of Postgresq
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
@@ -22,5 +23,6 @@ services:
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
   go-backend:
     build: .
+    restart: unless-stopped
     ports:
       - '${PORT}:${PORT}' # Map the port of the local machine to the containers port for the backend service both use the PORT env variable from the ./config/.env file

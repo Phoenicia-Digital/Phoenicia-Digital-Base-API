@@ -19,6 +19,8 @@ services:
 
   # Create the go-backend Service
   # 
+  # ONLY COMMENT THIS IF YOU ARE IN DEVELOPMENT PHASE AND USE `go run`!
+  # 
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
   go-backend:
     build: .

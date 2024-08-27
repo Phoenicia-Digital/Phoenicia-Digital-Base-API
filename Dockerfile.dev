@@ -12,9 +12,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy specific files and directories into the image
-COPY ./base/database ./base/database
-COPY ./base/utils ./base/utils
-COPY ./config/config.go ./config/config.go
+COPY ./base ./base
+COPY ./config ./config
+COPY ./source ./source
+COPY ./sql ./sql
 COPY ./Phoenicia-Digital.log ./Phoenicia-Digital.log
 COPY main.go ./main.go
 

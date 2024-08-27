@@ -15,6 +15,7 @@ RUN go mod download
 COPY ./base/database ./base/database
 COPY ./base/utils ./base/utils
 COPY ./config/config.go ./config/config.go
+COPY ./Phoenicia-Digital.log ./Phoenicia-Digital.log
 COPY main.go ./main.go
 
 # Declare /source as a volume

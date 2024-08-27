@@ -1,3 +1,5 @@
 -- Use this File To Initialize The postgresql-service That Will Be Run By Docker
 -- USE THIS TO CREATE TABLES!
 -- The Will Be Created Only On docker-compose --build
+-- Dont Forget To Do: GRANT INSERT, UPDATE, DELETE ON TABLE your_table TO your_user;
+-- \set my_variable 'some_value' -- Uncomment This And Set your_user For Ease Of Use

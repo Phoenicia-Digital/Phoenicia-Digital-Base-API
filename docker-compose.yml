@@ -4,18 +4,16 @@ services:
   # Create the postgresql-database Service that will host our postgresql Database
   # 
   # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE!
-  postgresql-database:
-    image: 'postgres:latest' # Use the latest version of Postgresq
-    env_file:
-      - ./config/.env # Use config file located at ./config/.env for environment variables
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
-      POSTGRES_DB: ${POSTGRES_DB} # Use the POSTGRES_DB env variable from ./config/.env
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432" # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
-    volumes:
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
+  # postgresql-database:
+  #   image: 'postgres:latest' # Use the latest version of Postgresq
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
+  #     POSTGRES_DB: ${POSTGRES_DB} # Use the POSTGRES_DB env variable from ./config/.env
+  #   ports:
+  #     - "${POSTGRES_PORT:-5432}:5432" # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
+  #   volumes:
+  #     - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
 
   # Create the go-backend Service
   # 
@@ -24,7 +22,5 @@ services:
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
   go-backend:
     build: .
-    env_file:
-      - ./config/.env # Use config file located at ./config/.env for environment variables
     ports:
       - '${PORT}:${PORT}' # Map the port of the local machine to the containers port for the backend service both use the PORT env variable from the ./config/.env file

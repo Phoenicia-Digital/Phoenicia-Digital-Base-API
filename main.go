@@ -3,6 +3,7 @@ package main
 import (
 	PhoeniciaDigitalDatabase "Phoenicia-Digital-Base-API/base/database"
 	PhoeniciaDigitalServer "Phoenicia-Digital-Base-API/base/server"
+	"context"
 )
 
 func main() {
@@ -11,7 +12,7 @@ func main() {
 	defer PhoeniciaDigitalDatabase.Postgres.DB.Close()
 
 	// if MongoDB Database Not In Use comment out
-	// defer PhoeniciaDigitalDatabase.Mongo.Client.Disconnect(context.Background())
+	defer PhoeniciaDigitalDatabase.Mongo.Client.Disconnect(context.Background())
 
 	PhoeniciaDigitalServer.StartServer()
 }

@@ -1,28 +1,48 @@
 # Create the list of services that will be used by docker-compose
 services:
 
-  # Create the postgresql-database Service that will host our postgresql Database
+  # Create the Postgresql Database Service For Production
   # 
-  # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE!
-  postgresql-database:
-    image: 'postgres:latest' # Use the latest version of Postgresq
-    restart: always
+  # IN CASE YOU DONT NEED A POSTGRESQL SERVICE COMMENT OUT THIS ENTIRE SERVICE! AND ITS DEPENDANCY `depends_on` IN go-backend
+  phoenicia-digital-postgres:
+    image: postgres:latest # Use the latest version of Postgresq
+    container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
       POSTGRES_DB: ${POSTGRES_DB} # Use the POSTGRES_DB env variable from ./config/.env
+    command: ["postgres", "-c", "port=${POSTGRES_PORT:-5432}"]
     ports:
-      - "${POSTGRES_PORT:-5432}:5432" # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
+      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432} # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
     volumes:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
+
+
+  # Create the Mongodb Database Service Production
+  # 
+  # IN CASE YOU DONT NEED A Mongodb SERVICE COMMENT OUT THIS ENTIRE SERVICE! AND ITS DEPENDANCY `depends_on` IN go-backend
+  phoenicia-digital-mongo:
+    image: mongo:latest
+    container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    command: ["mongod", "--port", "${MONGODB_PORT:-27017}", "--quiet"]
+    ports:
+      - ${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
 
   # Create the go-backend Service
   # 
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
   go-backend:
     build: .
-    restart: unless-stopped
+    container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Backend
+    restart: always
     ports:
       - '${PORT}:${PORT}' # Map the port of the local machine to the containers port for the backend service both use the PORT env variable from the ./config/.env file
     depends_on:
-      - postgresql-database # Ensure the database service starts before the backend
+      - phoenicia-digital-postgres # Ensure the Postgres Database Service Starts Before the Backend
+      - phoenicia-digital-mongo # Ensures the MongoDB Database Service Starts Before the Backend

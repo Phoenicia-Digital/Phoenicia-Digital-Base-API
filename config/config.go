@@ -10,9 +10,10 @@ import (
 )
 
 type _PhoeniciaDigitalConfig struct {
-	Port     string
-	Postgres postgres
-	Mongo    mongo
+	Project_Name string
+	Port         string
+	Postgres     postgres
+	Mongo        mongo
 }
 
 type postgres struct {
@@ -42,7 +43,8 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 
 	// Create a new _BEUConfig struct and populate it with values from environment variables
 	config := &_PhoeniciaDigitalConfig{
-		Port: fmt.Sprintf(":%s", os.Getenv("PORT")),
+		Project_Name: os.Getenv("PROJECT_NAME"),
+		Port:         fmt.Sprintf(":%s", os.Getenv("PORT")),
 		Postgres: postgres{
 			Postgres_host:     os.Getenv("POSTGRES_HOST"),
 			Postgres_port:     os.Getenv("POSTGRES_PORT"),

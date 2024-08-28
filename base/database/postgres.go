@@ -128,14 +128,21 @@ func implementPostgres() *sql.DB {
 		conStr += fmt.Sprintf("user=%s dbname=%s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_user, PhoeniciaDigitalConfig.Config.Postgres.Postgres_db)
 	}
 
-	// Check if a specific host is provided localhost || IP-Address to the Postgres Database
+	// Check if a specific host is provided localhost || IP-Address to the Postgres Database || Service Host
 	// Will be appended to conStr
 	if PhoeniciaDigitalConfig.Config.Postgres.Postgres_host != "" {
 		conStr += fmt.Sprintf(" host=%s", PhoeniciaDigitalConfig.Config.Postgres.Postgres_host)
+	} else if PhoeniciaDigitalConfig.Config.Project_Name != "" {
+		// By default if field is commented or not set We revert Back to Project Name
+		// Due to how our backend Containers are set up if a project name exists we connect
+		// via {Project Name}-Postgres then
+		// this {Project Name}-Postgres be appended to conStr
+		conStr += fmt.Sprintf(" host=%s-Postgres", PhoeniciaDigitalConfig.Config.Project_Name)
 	} else {
-		// By default if field is commented or not set in .env it will be set as localhost <POSTGRESQL DEFAULT>
-		// Will be appended to conStr
-		conStr += " host=localhost"
+		// 	By default if field is commented or not set in .env it will be set as Phoenicia-Digital-Postgres
+		//  <POSTGRESQL DEFAULT> Will be appended to conStr considering this project will be dockerised and make use
+		//	of docker-compose & Dockerfile
+		conStr += " host=Phoenicia-Digital-Postgres"
 	}
 
 	// Check If Port field is filled out & Make sure it an intiger from Range 0 to 65535

@@ -35,12 +35,12 @@ func implementMongoDB() *mongodb {
 	// A MongoDB Database & Will return nil & Log The Warning that it will continue Running Withought
 	// A MongoDB Database Connection
 	if PhoeniciaDigitalConfig.Config.Mongo.Mongo_db != "" {
+		// Start Implementing the Connection String For MongoDB if database field not empty in .env
+		conStr = "mongodb://"
+	} else {
 		log.Printf("Continued with No MongoDB Database implementation! | In case expected a db connection MONGODB_DATABASE field REQUIRED ./config/.env\n")
 		PhoeniciaDigitalUtils.Log("Continued with No MongoDB Database implementation! | In case expected a db connection MONGODB_DATABASE field REQUIRED ./config/.env\n")
 		return nil
-	} else {
-		// Start Implementing the Connection String For MongoDB if database field not empty in .env
-		conStr = "mongodb://"
 	}
 
 	// Check If MongoDB user field is no empty and add the username:password@ field to the connection string
@@ -52,11 +52,21 @@ func implementMongoDB() *mongodb {
 
 	// Check if a spcific MongoDB host is provided and append that to the Connection String
 	if PhoeniciaDigitalConfig.Config.Mongo.Mongo_host != "" {
+
 		conStr += PhoeniciaDigitalConfig.Config.Mongo.Mongo_host
+	} else if PhoeniciaDigitalConfig.Config.Project_Name != "" {
+		// If a Mongodb Host Is NOT Provided revert back to the Project Name
+		// Due to how our Dockerfile & docker-compose is set up
+		// the Mongodb Container Service is called {Project Name}-Mongodb
+		// then Get the Project Name and Append if to conStr wit the proper format
+
+		conStr += fmt.Sprintf("%s-Mongodb", PhoeniciaDigitalConfig.Config.Project_Name)
 	} else {
 		// If a host is not provided for For the MongoDB Connection it will result in appending
-		// localhost <MONGODB DEFAULT HOST> to the Connection String
-		conStr += "localhost"
+		// Phoenicia-Digital-Mongodb <MONGODB DEFAULT HOST> according to
+		// Dockerfile & docker-compose Setup to the Connection String
+
+		conStr += "Phoenicia-Digital-Mongodb"
 	}
 
 	// Check if a specific Port is provided for MongoDB coonection
@@ -124,6 +134,7 @@ func implementMongoDB() *mongodb {
 		return nil
 	}
 
+	log.Printf("Implemented Mongodb Database connection | settings: %s\n", conStr)
 	// In case all fields are populated as needed & Pings were successful return the Client Struct
 	return mongoDB
 }

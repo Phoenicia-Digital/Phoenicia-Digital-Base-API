@@ -16,8 +16,8 @@ COPY ./base ./base
 COPY ./config ./config
 COPY ./source ./source
 COPY ./sql ./sql
-COPY Phoenicia-Digital.log ./Phoenicia-Digital.log
-COPY main.go ./main.go
+COPY ./Phoenicia-Digital.log ./Phoenicia-Digital.log
+COPY ./main.go ./main.go
 
 # Declare /source as a volume
 VOLUME ["/sql", "/source"]

@@ -23,7 +23,7 @@ services:
   # 
   # IN CASE YOU DONT NEED A Mongodb SERVICE COMMENT OUT THIS ENTIRE SERVICE! AND ITS DEPENDANCY `depends_on` IN go-backend
   phoenicia-digital-mongo:
-    image: mongo:latest
+    image: mongodb/mongodb-community-server:latest
     container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Mongodb
     restart: unless-stopped
     environment:
@@ -51,7 +51,7 @@ services:
       - ./sql:/Backend/sql # Mount the entire project directory for live reloading
       - ./config/.env:/Backend/config/.env # Mount the .env file
       - ./base/server/server.go:/Backend/base/server/server.go # Mount specific file
-      - .Phoenicia-Digital.log:/Bachend/Phoenicia-Digital.log
+      - ./Phoenicia-Digital.log:/Bachend/Phoenicia-Digital.log
     depends_on:
       - phoenicia-digital-postgres # Ensure the Postgres Database Service Starts Before the Backend
       - phoenicia-digital-mongo # Ensures the MongoDB Database Service Starts Before the Backend

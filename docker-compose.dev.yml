@@ -9,9 +9,9 @@ services:
     container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
-      POSTGRES_DB: ${POSTGRES_DB} # Use the POSTGRES_DB env variable from ./config/.env
+      - POSTGRES_USER=${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
+      - POSTGRES_DB=${POSTGRES_DB} # Use the POSTGRES_DB env variable from ./config/.env
     command: ["postgres", "-c", "port=${POSTGRES_PORT:-5432}"]
     ports:
       - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432} # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
@@ -27,9 +27,9 @@ services:
     container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Mongodb
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
     command: ["mongod", "--port", "${MONGODB_PORT:-27017}", "--quiet"]
     ports:
       - ${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}

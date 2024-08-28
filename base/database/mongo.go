@@ -126,14 +126,6 @@ func implementMongoDB() *mongodb {
 		mongoDB.DB = mongoDB.Client.Database(PhoeniciaDigitalConfig.Config.Mongo.Mongo_db)
 	}
 
-	// Try and Ping the MongoDB Database Specified
-	if err := mongoDB.DB.Client().Ping(context.Background(), nil); err != nil {
-		// If an error occured while pinging the database specified Exist Process & Log the Error
-		PhoeniciaDigitalUtils.Log(fmt.Sprintf("Connected to MongoDB client but Database: %s Does NOT EXIST | Verify MONGODB_DATABASE", PhoeniciaDigitalConfig.Config.Mongo.Mongo_db))
-		log.Fatalf("Connected to MongoDB client but Database: %s Does NOT EXIST | Verify MONGODB_DATABASE", PhoeniciaDigitalConfig.Config.Mongo.Mongo_db)
-		return nil
-	}
-
 	log.Printf("Implemented Mongodb Database connection | settings: %s\n", conStr)
 	// In case all fields are populated as needed & Pings were successful return the Client Struct
 	return mongoDB

@@ -1,6 +1,7 @@
 PROJECT_NAME=Phoenicia-Digital-Base-API
 MAIN_PACKAGE=main.go
-BUILD_DIR=dist # IF THIS IS CHANGED THE DOCKER FILE HAS TO BE EDITED AS WELL!
+# IF THIS IS CHANGED THE DOCKER FILE HAS TO BE EDITED AS WELL!
+BUILD_DIR=build
 
 .PHONY: all build clean
 
@@ -10,6 +11,7 @@ build:
 	@echo "Building $(PROJECT_NAME)..."
 	@echo "Creating Build Directory: $(BUILD_DIR)..."
 	@mkdir -p $(BUILD_DIR)
+	@chmod +x $(BUILD_DIR)
 	@echo "Build Directory: $(BUILD_DIR) Created!"
 	@echo "Compiling Source Code..."
 	@go build -v -o $(BUILD_DIR) $(MAIN_PACKAGE)

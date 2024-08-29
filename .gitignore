@@ -6,3 +6,7 @@ Phoenicia-Digital.log
 
 # Ignore dist directory
 dist/
+
+# Ignore Persisted Data From Docker Contaienrs
+docker/.postgres/data/*
+docker/.mongo/data/*

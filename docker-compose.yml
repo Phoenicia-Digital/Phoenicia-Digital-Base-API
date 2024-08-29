@@ -7,7 +7,7 @@ services:
   phoenicia-digital-postgres:
     image: postgres:latest # Use the latest version of Postgresq
     container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Postgres
-    restart: unless-stopped
+    restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER} # Use the POSTGRES_USER env variable from ./config/.env
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} # Use the POSTGRES_PASSWORD env variable from ./config/.env Defaults to an empty string ':-''
@@ -17,6 +17,8 @@ services:
       - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432} # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
     volumes:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
+      - Postgres-Data:/var/lib/postgresql/data # Defines a Named Volume Declared in Volumes
+      - ./docker/.postgres/data:/var/lib/postgresql/data # Perists The Data From The Postgres Container -> ./docker/.postgres/data/
 
 
   # Create the Mongodb Database Service Production
@@ -25,7 +27,7 @@ services:
   phoenicia-digital-mongo:
     image: mongo:latest
     container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Mongodb
-    restart: unless-stopped
+    restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
@@ -33,6 +35,9 @@ services:
     command: ["mongod", "--port", "${MONGODB_PORT:-27017}", "--quiet"]
     ports:
       - ${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
+    volumes:
+      - Mongo-Data:/data/db # Defines a Named Volume Declared in Volumes
+      - ./docker/.mongo/data:/data/db # Perists The Data From The Mongo Container -> ./docker/.mongo/data/
 
   # Create the go-backend Service
   # 
@@ -46,3 +51,7 @@ services:
     depends_on:
       - phoenicia-digital-postgres # Ensure the Postgres Database Service Starts Before the Backend
       - phoenicia-digital-mongo # Ensures the MongoDB Database Service Starts Before the Backend
+
+volumes:
+  Postgres-Data: # Named Volume For Postgres Database - ./docker/.postgres/data/
+  Mongo-Data: # Named Volume For Mongo Database - ./docker/.mongo/data/

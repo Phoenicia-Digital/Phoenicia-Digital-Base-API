@@ -17,6 +17,8 @@ services:
       - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432} # Map the port from the POSTGRES_PORT variable in the .env file to the containers 5432 Port POSTGRES_PORT defaults to 5432 ':-5432'
     volumes:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql # Initialize the postgresql-database with init commands from ./sql/init.sql
+      - Postgres-Data:/var/lib/postgresql/data # Defines a Named Volume Declared in Volumes
+      - ./docker/.postgres/data:/var/lib/postgresql/data # Perists The Data From The Postgres Container -> ./docker/.postgres/data/
 
 
   # Create the Mongodb Database Service Development
@@ -33,6 +35,9 @@ services:
     command: ["mongod", "--port", "${MONGODB_PORT:-27017}", "--quiet"]
     ports:
       - ${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
+    volumes:
+      - Mongo-Data:/data/db # Defines a Named Volume Declared in Volumes
+      - ./docker/.mongo/data:/data/db # Perists The Data From The Postgres Container -> ./docker/.postgres/data/
 
 
   # Create the go-backend Development Environment
@@ -56,3 +61,6 @@ services:
       - phoenicia-digital-postgres # Ensure the Postgres Database Service Starts Before the Backend
       - phoenicia-digital-mongo # Ensures the MongoDB Database Service Starts Before the Backend
 
+volumes:
+  Postgres-Data: # Named Volume For Postgres Database - ./docker/.postgres/data/
+  Mongo-Data: # Named Volume For Mongo Database - ./docker/.mongo/data/

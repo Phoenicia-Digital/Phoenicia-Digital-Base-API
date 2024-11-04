@@ -14,6 +14,7 @@ type _PhoeniciaDigitalConfig struct {
 	Port         string
 	Postgres     postgres
 	Mongo        mongo
+	Redis        redis
 }
 
 type postgres struct {
@@ -32,6 +33,12 @@ type mongo struct {
 	Mongo_user     string
 	Mongo_password string
 	Mongo_ssl      string
+}
+
+type redis struct {
+	Redis_host     string
+	Redis_port     string
+	Redis_password string
 }
 
 func loadConfig() (*_PhoeniciaDigitalConfig, error) {
@@ -60,6 +67,11 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 			Mongo_user:     os.Getenv("MONGODB_USER"),
 			Mongo_password: os.Getenv("MONGODB_PASSWORD"),
 			Mongo_ssl:      os.Getenv("MONGODB_SSL"),
+		},
+		Redis: redis{
+			Redis_host:     os.Getenv("REDIS_HOST"),
+			Redis_port:     os.Getenv("REDIS_PORT"),
+			Redis_password: os.Getenv("Redis_PASSWORD"),
 		},
 	}
 

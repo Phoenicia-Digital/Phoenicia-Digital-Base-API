@@ -42,6 +42,25 @@ services:
     networks:
       - Phoenicia-Digital-Backend-Network # Makes This Container Use An Isolated Network Bridge Communication For All the Container
 
+  # Create the Redis Database Service Development
+  # 
+  # IN CASE YOU DONT NEED A Redis SERVICE COMMENT OUT THIS ENTIRE SERVICE! AND ITS DEPENDANCY `depends_on` IN go-backend
+  phoenicia-digital-redis:
+    image: redis/redis-stack:latest
+    container_name: ${PROJECT_NAME:-Phoenicia-Digital}-Redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}  # Passes the REDIS_PASSWORD environment variable to the container
+      - REDIS_USER=${REDIS_USER:-default}  # Passes the REDIS_USER environment variable to the container (defaults to "default")
+    command: ["redis-server", "--port", "${REDIS_PORT:-6379}", "--requirepass", "${REDIS_PASSWORD:-}", "--loadmodule /opt/redis-stack/lib/redisearch.so", "--loadmodule /opt/redis-stack/lib/rejson.so"]
+    volumes:
+      - Redis-Data:/data
+      - ./docker/.redis/data:/data # Mounts the ./docker/.redis/data directory to /data in the container
+    networks:
+      - Phoenicia-Digital-Backend-Network
+
   # Create the go-backend Development Environment
   # 
   # DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING & HAVE A REASON FOR IT!
@@ -58,9 +77,10 @@ services:
       - ./sql:/Backend/sql # Mount the entire project directory for live reloading
       - ./config/.env:/Backend/config/.env # Mount the .env file
       - ./base/server/server.go:/Backend/base/server/server.go # Mount specific file
-      - ./Phoenicia-Digital.log:/Bachend/Phoenicia-Digital.log
+      - ./Phoenicia-Digital.log:/Backend/Phoenicia-Digital.log
     depends_on:
       - phoenicia-digital-postgres # Ensure the Postgres Database Service Starts Before the Backend
+      - phoenicia-digital-redis # Ensures the Redis Database Service Starts Before the Backend
       - phoenicia-digital-mongo # Ensures the MongoDB Database Service Starts Before the Backend
     networks:
       - Phoenicia-Digital-Backend-Network # Makes This Container Use An Isolated Network Bridge Communication For All the Container
@@ -68,6 +88,7 @@ services:
 
 volumes:
   Postgres-Data: # Named Volume For Postgres Database - ./docker/.postgres/data/
+  Redis-Data: # Named volume for Redis Data - ./docker/.redis/data
   Mongo-Data: # Named Volume For Mongo Database - ./docker/.mongo/data/
 
 

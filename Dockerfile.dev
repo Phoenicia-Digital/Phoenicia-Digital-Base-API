@@ -1,6 +1,6 @@
 # Backend API Will be Run on a Ubuntu Server By Default With a Build For Golang.
 
-FROM golang:1.23
+FROM golang:1.24
 
 # Procedures that will likely Not Be Changed unless neccessary.
 # DO NOT CHANGE THIS IF YOU DONT KNOW WHAT YOU ARE DOING!

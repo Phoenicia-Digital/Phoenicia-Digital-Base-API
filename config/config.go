@@ -12,6 +12,7 @@ import (
 type _PhoeniciaDigitalConfig struct {
 	Project_Name string
 	Port         string
+	CORS         string
 	Postgres     postgres
 	Mongo        mongo
 	Redis        redis
@@ -52,6 +53,7 @@ func loadConfig() (*_PhoeniciaDigitalConfig, error) {
 	config := &_PhoeniciaDigitalConfig{
 		Project_Name: os.Getenv("PROJECT_NAME"),
 		Port:         fmt.Sprintf(":%s", os.Getenv("PORT")),
+		CORS:         os.Getenv("CORS_ORIGIN"),
 		Postgres: postgres{
 			Postgres_host:     os.Getenv("POSTGRES_HOST"),
 			Postgres_port:     os.Getenv("POSTGRES_PORT"),

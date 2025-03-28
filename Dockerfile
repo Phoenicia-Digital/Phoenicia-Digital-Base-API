@@ -1,7 +1,7 @@
 # Backend API Will be Run on a Ubuntu Server By Default.
 
 # Get Golang Version x.xx as golang-builder to build the files:
-FROM golang:1.23 AS dependancies
+FROM golang:1.24 AS dependancies
 
 # Procedures that will likely Not Be Changed unless neccessary.
 # DO NOT CHANGE THIS IF YOU DONT KNOW WHAT YOU ARE DOING!
